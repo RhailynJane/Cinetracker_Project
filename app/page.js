@@ -107,7 +107,7 @@ export default function Page() {
                     </Button>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="secondary"
                       className="w-full sm:w-auto"
                       onClick={goLogin}
                     >
