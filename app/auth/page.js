@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import Header from "@/components/layout/Header";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 /**
- * Authentication page component that handles both login and registration
- * Automatically redirects authenticated users to the home page
+ * Auth content component that uses useSearchParams
+ * Separated to be wrapped in Suspense boundary
  */
-export default function AuthPage() {
+function AuthContent() {
   const params = useSearchParams();
   // Extract mode from URL params, default to "register" if not "login"
   const mode = params.get("mode") === "login" ? "login" : "register";
@@ -64,5 +64,29 @@ export default function AuthPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+/**
+ * Authentication page component that handles both login and registration
+ * Automatically redirects authenticated users to the home page
+ */
+export default function AuthPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[100dvh] flex flex-col">
+          <Header />
+          <main className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p>Loading...</p>
+            </div>
+          </main>
+        </div>
+      }
+    >
+      <AuthContent />
+    </Suspense>
   );
 }
