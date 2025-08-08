@@ -75,8 +75,6 @@ components/
  layout/ # Header, Footer
  auth/ # AuthProvider, AuthModal
  movie/ # MovieCard, MovieGrid
- search/ # SearchBar, SearchFilters
- user/ # User-related components
 ```
 
 ### Data Flow
@@ -163,7 +161,6 @@ cinetracker/
  layout/
  movie/
  ui/
- user/
  lib/
  firebase.js
  auth.js
@@ -221,23 +218,7 @@ Visit: http://localhost:3000
 ### Future Enhancements
 
 - User-generated reviews & ratings
-- Friend system and social features
-- AI-powered recommendations
 - Watchlist collaboration
-- Native mobile app
-- Offline mode with local caching
-- Analytics dashboard
-
-### Success Metrics (Targets)
-
-| Area        | Goal                                   |
-| ----------- | -------------------------------------- |
-| Engagement  | 10,000+ MAUs, 15+ min avg session      |
-| Retention   | 70%+ return rate within 30 days        |
-| Feature Use | 85%+ create a list                     |
-| Performance | <2s page load, 500ms API, 99.9% uptime |
-| Mobile UX   | 90+ Lighthouse score                   |
-| Discovery   | 95%+ search success, 1M+ content items |
 
 ## Conclusion
 
