@@ -25,9 +25,9 @@ this by offering:
 
 - Browse trending movies and TV shows
 - Search with filters (genre, year, rating)
-- Detailed pages with cast, crew, and overview
+- Detailed movie pages with cast, crew, and overview
 - Personal watchlist and favorites
-- User authentication (Google & Email/Password)
+- User authentication (Email/Password)
 - Real-time data sync with Firebase
 
 ### Stretch Goals
@@ -35,10 +35,6 @@ this by offering:
 - User profile with viewing stats
 - Responsive design across all devices
 - Dark/Light theme toggle
-- Personalized recommendation engine
-- Social sharing features
-- Streaming availability checker
-- PWA support for offline access
 
 ---
 
@@ -48,7 +44,7 @@ this by offering:
 | -------------- | ------------------------------------------------ |
 | **Frontend**   | Next.js 14 (App Router), Tailwind CSS, shadcn/ui |
 | **State Mgmt** | React Context API                                |
-| **Auth**       | Firebase Auth (Google + Email)                   |
+| **Auth**       | Firebase Auth (Email/Password)                   |
 | **Database**   | Firebase Firestore                               |
 | **APIs**       | TMDB API                                         |
 | **Deployment** | Vercel                                           |
@@ -63,13 +59,12 @@ this by offering:
 app/
  layout.js # Root layout with providers
  page.js # Homepage with trending content
- search/ # Search functionality
- movie/[id]/ # Movie detail pages
- tv/[id]/ # TV show detail pages
- watchlist/ # User watchlist
+ auth/ # Authentication pages
  favorites/ # User favorites
- watched/ # Watched history
+ movie/[id]/ # Movie detail pages
  profile/ # User profile
+ watched/ # Watched history
+ watchlist/ # User watchlist
 ```
 
 ### Component Structure
@@ -103,22 +98,21 @@ components/
 
 | Week | Milestone                                  | Status |
 | ---- | ------------------------------------------ | ------ |
-| 1    | Project setup, Firebase integration        |        |
-| 2    | TMDB API integration, search functionality |        |
-| 3    | User auth, data persistence                |        |
-| 4    | Testing, optimization, deployment          |        |
+| 1    | Project setup, Firebase integration        | Done   |
+| 2    | TMDB API integration, search functionality | Done   |
+| 3    | User auth, data persistence                | Done   |
+| 4    | Testing, optimization, deployment          | Done   |
 
 ### Key Features Breakdown
 
 ** Content Discovery**
 
-- TMDB integration for real-time content
+- TMDB integration for real-time movie content
 - Advanced filters for precise search
-- Weekly & daily trending content
+- Weekly & daily trending movies
 - Deep detail pages: cast, crew, recommendations
   ** User Authentication**
-- Secure sign-in/sign-up via Firebase
-- Google OAuth support
+- Secure sign-in/sign-up via Firebase Email/Password
 - Personalized dashboard & stats
 - Real-time cross-device data sync
   ** List Management**
@@ -141,8 +135,8 @@ components/
 - TypeScript
 - Lucide React for icons
   **Backend & Services**
-- TMDB API for content
-- Firebase Auth for auth
+- TMDB API for movie content
+- Firebase Auth for email/password auth
 - Firestore for real-time DB
 - Vercel for deployment
   **State & Data**
@@ -158,9 +152,8 @@ cinetracker/
  app/
  layout.js
  page.js
- search/
+ auth/
  movie/[id]/
- tv/[id]/
  watchlist/
  favorites/
  watched/
@@ -169,7 +162,6 @@ cinetracker/
  auth/
  layout/
  movie/
- search/
  ui/
  user/
  lib/
@@ -184,7 +176,7 @@ cinetracker/
 
 ### Authentication
 
-- Firebase Email/Password + Google OAuth
+- Firebase Email/Password authentication
 - Route protection using Auth Context
 - Real-time user session sync
 - Token refresh and secure storage
@@ -192,7 +184,7 @@ cinetracker/
 ### Data & API Handling
 
 - Firestore: Real-time syncing for user data
-- TMDB API: Content discovery with error handling
+- TMDB API: Movie discovery with error handling
 - Caching, throttling, and graceful fallbacks
 - Optimistic updates for faster UI feedback
 

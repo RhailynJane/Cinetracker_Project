@@ -1,102 +1,175 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import dynamic from "next/dynamic";
+import { useState } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
+import Header from "@/components/layout/Header";
+import { Button } from "@/components/ui/button";
+import { Film } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+// Dynamically import MovieGrid component to improve initial page load performance
+// Shows skeleton loading state while the component loads
+const MovieGrid = dynamic(() => import("@/components/movie/MovieGrid"), {
+  loading: () => (
+    <div className="container py-10">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        {/* Create 10 skeleton placeholders for loading state */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-[280px] rounded-md bg-neutral-200 dark:bg-neutral-800 animate-pulse"
+          />
+        ))}
+      </div>
+    </div>
+  ),
+});
+
+/**
+ * Main page component for CineTracker application
+ * Shows different content based on user authentication status:
+ * - Landing page with hero section for unauthenticated users
+ * - Movie search and browse interface for authenticated users
+ *
+ * @returns {JSX.Element} The main page component
+ */
+export default function Page() {
+  // Get authentication state from context
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  // Local state for search functionality
+  const [query, setQuery] = useState(""); // Current input value
+  const [submittedQuery, setSubmittedQuery] = useState(""); // Query submitted for search
+
+  // Navigation handlers for authentication routes
+  const goRegister = () => router.push("/auth?mode=register");
+  const goLogin = () => router.push("/auth?mode=login");
+
+  // Handle search form submission
+  const onSearch = (e) => {
+    e.preventDefault();
+    setSubmittedQuery(query.trim()); // Trim whitespace and update search query
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-[100dvh] flex flex-col">
+      {/* Global navigation header */}
+      <Header />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+      <main className="flex-1">
+        {/* Conditional rendering based on authentication status */}
+        {!user ? (
+          // Landing page for unauthenticated users
+          <section className="relative">
+            {/* Hero background image with overlay */}
+            <div className="absolute inset-0">
+              <img
+                src="/cinemabackground.png"
+                alt="Cinematic background"
+                className="h-full w-full object-cover"
+              />
+              {/* Dark overlay for text readability */}
+              <div className="absolute inset-0 bg-black/50" />
+            </div>
+
+            {/* Hero content */}
+            <div className="relative container mx-auto px-4">
+              <div className="min-h-[calc(100dvh-56px)] flex items-center justify-center">
+                <div className="mx-auto max-w-3xl text-center space-y-6 text-white">
+                  {/* Brand tagline with icon */}
+                  <div className="inline-flex items-center gap-2 text-sm text-neutral-300 justify-center">
+                    <Film className="h-4 w-4" />
+                    <span>{"Discover • Track • Enjoy"}</span>
+                  </div>
+
+                  {/* Main hero headline */}
+                  <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+                    {"Find your next favorite. Track everything you watch."}
+                  </h1>
+
+                  {/* Hero description */}
+                  <p className="text-neutral-300 text-lg">
+                    {
+                      "A minimalist way to build your watchlist and favorites, synced in real-time."
+                    }
+                  </p>
+
+                  {/* Call-to-action buttons */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <Button
+                      type="button"
+                      className="w-full sm:w-auto"
+                      onClick={goRegister}
+                    >
+                      {"Get started"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      onClick={goLogin}
+                    >
+                      {"Log in"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : (
+          // Main app interface for authenticated users
+          <section>
+            <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+              {/* Page title */}
+              <h2 className="text-3xl font-bold text-primary text-center">
+                Browse movies and manage your lists.
+              </h2>
+
+              {/* Movie search form */}
+              <form
+                className="mx-auto w-full max-w-md relative"
+                onSubmit={onSearch}
+              >
+                <input
+                  type="text"
+                  placeholder="Search movies..."
+                  className="w-full rounded-md border border-gray-300 px-4 py-2 pl-10 text-sm shadow-sm focus:border-primary focus:ring-1 focus:ring-primary dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                {/* Search icon positioned inside input field */}
+                <svg
+                  className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-neutral-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+                  />
+                </svg>
+              </form>
+
+              {/* Movie grid - only render when not loading auth state */}
+              {!loading && <MovieGrid searchQuery={submittedQuery} />}
+            </div>
+          </section>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Site footer with copyright and tech stack info */}
+      <footer className="border-t">
+        <div className="container mx-auto px-4 py-6 text-sm text-muted-foreground flex items-center justify-between">
+          <span>{"© " + new Date().getFullYear() + " CineTracker"}</span>
+          <span>{"Built with Next.js + Firebase + TMDB"}</span>
+        </div>
       </footer>
     </div>
   );
